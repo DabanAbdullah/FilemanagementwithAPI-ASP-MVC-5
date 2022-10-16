@@ -1,0 +1,303 @@
+﻿@model IEnumerable<filestbl>
+@using Microsoft.AspNet.Identity;
+@using project.Models;
+
+@{
+    ViewBag.Title = "Upload";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+    projectdbEntities dbb = new projectdbEntities();
+}
+
+
+@ViewBag.result
+<div class="jumbotron">
+    <h1>Upload</h1>
+    <p class="lead">You can upload and manage File Here </p>
+
+</div>
+
+<table>
+
+    <tr>
+        <td>File:</td>
+        <td><input type="file" id="fileupload" multiple /></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="button" id="btnUpload" value="Upload" /></td>
+    </tr>
+    <tr>
+        <td colspan="2"><progress id="fileProgress" style="display: none"></progress></td>
+
+    </tr>
+</table>
+<hr />
+<span id="lblMessage" style="color: Green"></span>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+
+    
+       
+
+        $("body").on("click", "#btnUpload", function () {
+            var formData = new FormData();
+            var id = "@User.Identity.GetUserId()";
+            const input = document.querySelector('#fileupload');
+        const files = input.files;
+        for (let i = 0; i < files.length; i++) {
+
+            let file = files.item(i);
+            formData.append(file.name, $("#fileupload")[0].files[i])
+            }
+          //  formData.append("file", $("#file")[0].files[0]);
+
+
+            //formData.append("file", $("#file")[0].files);
+           // alert($("#file")[0].files[0]);
+           // alert($("#file")[0].files);
+            formData.append("uid", id);
+            $.ajax({
+                url: '/api/FileAPI/file',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    "authorization": "bearer " + token,
+
+                },
+                success: function (fileName) {
+                    $("#fileProgress").hide();
+                    if (fileName.toString().includes("was not")) {
+                        $("#lblMessage").html("<b style='color:red;'>" + fileName + "</b> .");
+                    }
+                    else {
+                        $("#lblMessage").html("<b>" + fileName + "</b> .");
+                        window.localStorage.setItem("result", "<b>" + fileName + "</b> .");
+                                Swal.fire('Saved!', '', 'success');
+                                setTimeout(() => { window.location = '/Home/Upload/' }, 2000);
+                          
+                            
+                     
+                       
+                      
+
+
+                    }
+
+                },
+                xhr: function () {
+                    var fileXhr = $.ajaxSettings.xhr();
+                    if (fileXhr.upload) {
+                        $("progress").show();
+                        fileXhr.upload.addEventListener("progress", function (e) {
+                            if (e.lengthComputable) {
+                                $("#fileProgress").attr({
+                                    value: e.loaded,
+                                    max: e.total
+                                });
+                            }
+                        }, false);
+                    }
+                    return fileXhr;
+                }
+            });
+        });
+</script>
+
+<br />
+
+
+<hr />
+<br />
+
+@{
+    var userid = User.Identity.GetUserId();
+}
+<div class="container">
+
+    <div class="col-lg-12">
+       <p id="result1"><script>document.getElementById("result1").innerHTML = window.localStorage.getItem('result');
+           window.localStorage.removeItem('result');
+           var base_url = window.location.origin;
+          
+           var a = document.getElementById('result1').getElementsByTagName('a');
+           for (var i = 0; i < a.length; i++) {
+               var elem = a[i];
+               var link = elem.getAttribute("href");
+               elem.setAttribute("href", base_url + "/Home/" + link);
+                
+           }
+         
+
+            </script></p>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>File</th>
+                    <th>size & Date</th>
+                    <th>Shared with</th>
+                    <th>Blocked</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+                @foreach (filestbl rec in Model)
+                {
+
+                <tr>
+                    <td><a href="~/Home/detail/@rec.fileid" target="_blank">@rec.filename</a></td>
+                    <td>@rec.filesize & @rec.uploaddate</td>
+                    <td>@rec.sharedwith</td>
+                    <td>
+                        @if (rec.blocked == 0)
+                        {<p>no</p> }
+
+                        else
+                        {<p>yes</p>}
+                    </td>
+                    <th><input type="submit" value="delete" id="@rec.fileid" class="btn btn" onclick="deletefile(this.id)" style="background-color:#FDCC0E;color:white" /> 
+                    <input type="submit" value="Share" onclick="share(this.id)" id="@rec.fileid" class="btn btn" style="background-color:#024F4B; color:white" />
+                    </th>
+                </tr>
+                }
+
+
+
+
+            </tbody>
+        </table>
+
+    </div>
+ 
+    <script>
+        var token = getCookie("token");
+
+        function deletefile(id) {
+            Swal.fire({
+                title: 'Do you want to  delete this file?',
+                showCancelButton: true,
+                customClass: 'swal-wide',
+                confirmButtonText: `Delete`,
+                
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+
+                    var formData = new FormData();
+                    var uid = "@User.Identity.GetUserId()";
+                    formData.append("uid", uid);
+                    formData.append("Id", id);
+
+                    $.ajax({
+                        url: '/api/FileAPI/file/',
+                        type: 'DELETE',
+                        data: formData,
+                        cache: false,
+                        headers: {
+                            "authorization": "bearer " + token,
+
+                        },
+                        contentType: false,
+                        processData: false,
+                        success: function (fileName) {
+
+                            Swal.fire(fileName, '', 'info');
+                            setTimeout(() => { window.location = '/Home/Upload/' }, 2000);
+                        },
+                        xhr: function () {
+                            var fileXhr = $.ajaxSettings.xhr();
+                            if (fileXhr.upload) {
+                                $("progress").show();
+                                fileXhr.upload.addEventListener("progress", function (e) {
+                                    if (e.lengthComputable) {
+                                        $("#fileProgress").attr({
+                                            value: e.loaded,
+                                            max: e.total
+                                        });
+                                    }
+                                }, false);
+                            }
+                            return fileXhr;
+                        }
+                    });
+
+
+
+
+
+
+                    }
+                else {
+                    Swal.fire('delete proccess is canceled', '', 'info')
+                }
+            });
+        }
+
+
+
+
+
+        function share(id) {
+
+            
+            Swal.fire({
+                title: "Share",
+                text: "you can share with email or just write public",
+                input: 'text',
+                customClass: 'swal-wide',
+                showCancelButton: true
+            }).then((result) => {
+                if (result.value) {
+
+                      var formData = new FormData();
+                    var uid = "@User.Identity.GetUserId()";
+                    formData.append("uid", uid);
+                    formData.append("fileid", id);
+                    formData.append("email", result.value);
+                    $.ajax({
+                        url: '/api/FileAPI/Share/',
+                        type: 'PUT',
+                        data: formData,
+                        cache: false,
+                        headers: {
+                            "authorization": "bearer " + token,
+
+                        },
+                        contentType: false,
+
+                        processData: false,
+                        success: function (fileName) {
+
+                            Swal.fire(fileName, '', 'info');
+                            setTimeout(() => { window.location = '/Home/Upload/' }, 2000);
+                        },
+                        xhr: function () {
+                            var fileXhr = $.ajaxSettings.xhr();
+                            if (fileXhr.upload) {
+                                $("progress").show();
+                                fileXhr.upload.addEventListener("progress", function (e) {
+                                    if (e.lengthComputable) {
+                                        $("#fileProgress").attr({
+                                            value: e.loaded,
+                                            max: e.total
+                                        });
+                                    }
+                                }, false);
+                            }
+                            return fileXhr;
+                        }
+                    });
+
+
+
+
+                }
+            });
+        }
+    </script>
+
+</div>

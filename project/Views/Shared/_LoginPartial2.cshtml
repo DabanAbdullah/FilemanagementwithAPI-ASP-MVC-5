@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNet.Identity
+@using project.Models;
+
+@{
+    /**/
+
+    projectdbEntities dbb = new projectdbEntities();
+
+}
+@if (Request.IsAuthenticated)
+{
+
+
+
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        var id = User.Identity.GetUserId();
+        var user = dbb.AspNetUsers.Where(x => x.Id == id).FirstOrDefault().profilephoto;
+        @Html.AntiForgeryToken()
+
+
+<a class="nav-link collapsed" href="~/Manage/Index" >
+    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+    @User.Identity.GetUserName()
+ 
+    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+</a>
+
+
+        <a class="nav-link collapsed" href="javascript:document.getElementById('logoutForm').submit()" >
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Logout
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+
+
+
+
+
+
+    }
+}
+else
+{
+
+
+        <a class="nav-link collapsed" href="~/Account/Login" >
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Log in
+         
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+  
+
+
+
+
+
+}

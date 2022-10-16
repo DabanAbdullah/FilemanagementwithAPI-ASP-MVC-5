@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="projectdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="AspNetUsers">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="256" />
+    <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+    <Property Name="PasswordHash" Type="nvarchar(max)" />
+    <Property Name="SecurityStamp" Type="nvarchar(max)" />
+    <Property Name="PhoneNumber" Type="nvarchar(max)" />
+    <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+    <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+    <Property Name="LockoutEndDateUtc" Type="datetime" />
+    <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+    <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="profilephoto" Type="nvarchar(max)" />
+    <Property Name="fullname" Type="nvarchar(max)" />
+    <Property Name="uid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="passwordenc" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="filestbl">
+    <Key>
+      <PropertyRef Name="fileid" />
+    </Key>
+    <Property Name="fileid" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="filename" Type="nvarchar" MaxLength="200" />
+    <Property Name="filedata" Type="varbinary(max)" />
+    <Property Name="filesize" Type="nvarchar" MaxLength="200" />
+    <Property Name="uploaddate" Type="datetime" />
+    <Property Name="filehash" Type="nvarchar(max)" />
+    <Property Name="uid" Type="nvarchar" MaxLength="128" />
+    <Property Name="blocked" Type="int" />
+    <Property Name="lastdownloaddate" Type="datetime" />
+    <Property Name="sharedwith" Type="nvarchar" MaxLength="50" />
+    <Property Name="cause" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="limittbl">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ip" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="nextdownload" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Requesttbl">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="fileid" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="requesttyepe" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="causeofrequest" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="response" Type="nvarchar" MaxLength="10" />
+    <Property Name="causeofresponse" Type="nvarchar(max)" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'projectdb.dbo.userroles' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="userroles">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <EntityContainer Name="projectdbModelStoreContainer">
+    <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="filestbl" EntityType="Self.filestbl" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="limittbl" EntityType="Self.limittbl" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Requesttbl" EntityType="Self.Requesttbl" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="userroles" EntityType="Self.userroles" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [userroles].[Id] AS [Id], 
+    [userroles].[Name] AS [Name], 
+    [userroles].[Email] AS [Email]
+    FROM [dbo].[userroles] AS [userroles]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

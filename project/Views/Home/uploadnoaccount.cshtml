@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "uploadnoaccount";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>Upload</h1>
+    <p class="lead">you can still upload even if you don't have an account but you can not manage your files </p>
+
+</div>
+
+<table>
+
+    <tr>
+        <td>File:</td>
+        <td><input type="file" id="file" /></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="button" id="btnUpload" value="Upload" /></td>
+    </tr>
+    <tr>
+        <td colspan="2"><progress id="fileProgress" style="display: none"></progress></td>
+
+    </tr>
+</table>
+<hr />
+<span id="lblMessage" style="color: Green"></span>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+
+
+        $("body").on("click", "#btnUpload", function () {
+            var formData = new FormData();
+          
+
+            formData.append("file", $("#file")[0].files[0]);
+           
+            $.ajax({
+                url: '/api/FileAPI/uploadnoauth',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (fileName) {
+                    $("#fileProgress").hide();
+                    if (fileName.toString().includes("was not")) {
+                        $("#lblMessage").html("<b style='color:red;'>" + fileName + "</b> .");
+                    }
+                    else {
+                        $("#lblMessage").html("<b>" + fileName + "</b> .");
+                    }
+
+                },
+                xhr: function () {
+                    var fileXhr = $.ajaxSettings.xhr();
+                    if (fileXhr.upload) {
+                        $("progress").show();
+                        fileXhr.upload.addEventListener("progress", function (e) {
+                            if (e.lengthComputable) {
+                                $("#fileProgress").attr({
+                                    value: e.loaded,
+                                    max: e.total
+                                });
+                            }
+                        }, false);
+                    }
+                    return fileXhr;
+                }
+            });
+        });
+</script>
+
+<br />

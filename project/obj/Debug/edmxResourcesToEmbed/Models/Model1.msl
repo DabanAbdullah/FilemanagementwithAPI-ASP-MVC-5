@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="projectdbModelStoreContainer" CdmEntityContainer="projectdbEntities">
+    <EntitySetMapping Name="filestbls">
+      <EntityTypeMapping TypeName="projectdbModel.filestbl">
+        <MappingFragment StoreEntitySet="filestbl">
+          <ScalarProperty Name="cause" ColumnName="cause" />
+          <ScalarProperty Name="sharedwith" ColumnName="sharedwith" />
+          <ScalarProperty Name="lastdownloaddate" ColumnName="lastdownloaddate" />
+          <ScalarProperty Name="blocked" ColumnName="blocked" />
+          <ScalarProperty Name="uid" ColumnName="uid" />
+          <ScalarProperty Name="filehash" ColumnName="filehash" />
+          <ScalarProperty Name="uploaddate" ColumnName="uploaddate" />
+          <ScalarProperty Name="filesize" ColumnName="filesize" />
+          <ScalarProperty Name="filedata" ColumnName="filedata" />
+          <ScalarProperty Name="filename" ColumnName="filename" />
+          <ScalarProperty Name="fileid" ColumnName="fileid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="limittbls">
+      <EntityTypeMapping TypeName="projectdbModel.limittbl">
+        <MappingFragment StoreEntitySet="limittbl">
+          <ScalarProperty Name="nextdownload" ColumnName="nextdownload" />
+          <ScalarProperty Name="ip" ColumnName="ip" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AspNetUsers">
+      <EntityTypeMapping TypeName="projectdbModel.AspNetUser">
+        <MappingFragment StoreEntitySet="AspNetUsers">
+          <ScalarProperty Name="passwordenc" ColumnName="passwordenc" />
+          <ScalarProperty Name="uid" ColumnName="uid" />
+          <ScalarProperty Name="fullname" ColumnName="fullname" />
+          <ScalarProperty Name="profilephoto" ColumnName="profilephoto" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+          <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+          <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+          <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+          <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+          <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+          <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Requesttbls">
+      <EntityTypeMapping TypeName="projectdbModel.Requesttbl">
+        <MappingFragment StoreEntitySet="Requesttbl">
+          <ScalarProperty Name="causeofresponse" ColumnName="causeofresponse" />
+          <ScalarProperty Name="response" ColumnName="response" />
+          <ScalarProperty Name="causeofrequest" ColumnName="causeofrequest" />
+          <ScalarProperty Name="requesttyepe" ColumnName="requesttyepe" />
+          <ScalarProperty Name="fileid" ColumnName="fileid" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="userroles">
+      <EntityTypeMapping TypeName="projectdbModel.userrole">
+        <MappingFragment StoreEntitySet="userroles">
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

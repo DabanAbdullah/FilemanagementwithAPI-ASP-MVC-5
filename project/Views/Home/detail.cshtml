@@ -1,0 +1,292 @@
+﻿@model project.Models.filestbl
+@{
+    ViewBag.Title = "detail";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<h2>Detail</h2>
+
+<div>
+    <div>
+        <h4 id="end">@ViewBag.result     </h4>
+        <hr />
+        @using (Html.BeginForm())
+        {
+            @Html.HiddenFor(x => x.filedata)
+            @Html.HiddenFor(x => x.fileid)
+            @Html.HiddenFor(x => x.filename)
+            @Html.HiddenFor(x => x.filesize)
+            @Html.HiddenFor(x => x.uploaddate)
+            @Html.HiddenFor(x => x.filehash)
+            @Html.HiddenFor(model => model.fileid)
+            @Html.HiddenFor(model => model.blocked)
+            @Html.HiddenFor(model => model.cause)
+            <dl class="dl-horizontal">
+                <dt>
+               FileName
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.filename)
+                </dd>
+
+
+
+
+
+                <dt>
+                  FileSize
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.filesize)
+                </dd>
+
+                <dt>
+                   Uploaded Date
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.uploaddate)
+                </dd>
+
+                <dt>
+                   File Hash
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.filehash)
+                </dd>
+                <dt>
+
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.cause)
+                </dd>
+
+
+
+
+                <dt>
+                    Blocked
+                </dt>
+
+                <dd>
+                    @{
+                        if (Model != null)
+                        {
+
+                            if (Model.blocked == 0)
+                            { <p>No</p>}
+                            else
+                            {
+                                <p>Yes</p>
+                            }
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                </dd>
+
+            </dl>
+
+            <div class="form-group">
+
+                <div id="myform" class="col-md-2">
+                    <input type="submit" name="download" id="download" class="btn btn" style="background-color:#024F4B; color:white" value="Download"  />
+                </div>
+
+                <br />
+                <div  class="col-md-2">
+                    @if (Model.blocked == 0)
+                    {
+                        <input type="submit" name="RequestBlock" id="RequestBlock" onclick="makerequest('block'); return false" class="btn btn" style="background-color:#FDCC0E" value="Request for Block" />
+                    }
+                    else
+                    {<input type="submit" name="RequestUnBlock" id="RequestUnBlock" onclick="makerequest('unblock'); return false" class="btn btn" style="background-color:#FDCC0E" value="Request for UnBlock" />
+
+                    }
+
+                </div>
+
+            </div>
+            <br />
+            <span id="lblMessage" style="   color: Green"></span>
+
+        }
+    </div>
+        </div>
+
+
+@section scripts{
+   
+
+    <script>
+
+    function makerequest(type) {
+
+
+        Swal.fire({
+            title: type,
+                text: "write the cause of this request",
+                input: 'text',
+                customClass: 'swal-wide',
+                showCancelButton: true
+            }).then((result) => {
+                if (result.value) {
+
+                      var formData = new FormData();
+                    var fileid = "@Model.fileid";
+                    formData.append("fileid", fileid);
+                    formData.append("type", type);
+                    formData.append("cause", result.value);
+                    $.ajax({
+                        url: '/api/FileAPI/MakeRequest/',
+                        type: 'POST',
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (fileName) {
+
+                            Swal.fire(fileName, '', 'info');
+                            setTimeout(() => { window.location = '/Home/detail/'+"@Model.fileid" }, 3000);
+                        },
+                        xhr: function () {
+                            var fileXhr = $.ajaxSettings.xhr();
+                            if (fileXhr.upload) {
+                                $("progress").show();
+                                fileXhr.upload.addEventListener("progress", function (e) {
+                                    if (e.lengthComputable) {
+                                        $("#fileProgress").attr({
+                                            value: e.loaded,
+                                            max: e.total
+                                        });
+                                    }
+                                }, false);
+                            }
+                            return fileXhr;
+                        }
+                    });
+
+
+
+
+                }
+            });
+
+
+    }
+    </script>
+
+    
+    <script type="text/javascript">
+        const myInterval2 = setInterval(myTimer2, 1000);
+
+        $(function () {
+
+            $("#myform :input").prop("disabled", true);
+            
+
+
+
+
+        });
+
+
+
+
+
+
+        function myTimer2() {
+
+            if (authenticated == "true") {
+                clearInterval(myInterval2);
+                $("#myform :input").prop("disabled", false);
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+}
+
+
+
+
+
+
+@{ if (!User.Identity.IsAuthenticated)
+    {
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+        <script>
+
+          
+         
+
+            (function () {
+
+                const myInterval = setInterval(myTimer, 1000);
+
+
+
+                function myTimer() {
+
+                    if (document.getElementById("end").innerHTML.toString().includes("block")) {
+
+                    }
+                    else {
+                        $.ajax(
+                            {
+                                type: 'GET',
+
+                                url: '/Home/nextdownload',
+
+                                success:
+                                    function (response) {
+
+
+                                        $("#end").html(response);
+
+                                        if (response == ("you can download now")) {
+                                           // clearInterval(myInterval);
+                                            $("#myform :input").prop("disabled", false);
+                                        }
+
+                                        else {
+                                            $("#myform :input").prop("disabled", true);
+                                        }
+
+                                    },
+                                error:
+                                    function (response) {
+                                        alert("Error: " + response);
+                                    }
+                            });
+                    }
+
+                }
+
+            })();
+
+        </script>}
+}
+
+
+
